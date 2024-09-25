@@ -6,23 +6,36 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using LeaveManagementSystem.Web.Data;
+using LeaveManagementSystem.Web.Models;
+using AutoMapper;
+using LeaveManagementSystem.Web.Models.LeaveTypes;
 
 namespace LeaveManagementSystem.Web.Controllers
 {
     public class LeaveTypesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public LeaveTypesController(ApplicationDbContext context)
+        public LeaveTypesController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: LeaveTypes
         public async Task<IActionResult> Index()
         {
             var data = await _context.LeaveTypes.ToListAsync();
-            return View(data);
+
+            //var viewData = data.Select(p => new LeaveTypeReadOnlyVM
+            //{
+            //    Id = p.Id,
+            //    Name = p.Name,
+            //    Days = p.NumberOfDays
+            //});
+            var viewData = _mapper.Map<List<LeaveTypeReadOnlyVM>>(data);
+            return View(viewData);
         }
 
         // GET: LeaveTypes/Details/5
@@ -39,8 +52,8 @@ namespace LeaveManagementSystem.Web.Controllers
             {
                 return NotFound();
             }
-
-            return View(leaveType);
+            var viewData = _mapper.Map<LeaveTypeReadOnlyVM>(leaveType);
+            return View(viewData);
         }
 
         // GET: LeaveTypes/Create
@@ -54,15 +67,22 @@ namespace LeaveManagementSystem.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,NumberOfDays")] LeaveType leaveType)
+        public async Task<IActionResult> Create(LeaveTypeCreateVM leaveTypes)
         {
+            //if (await CheckIfLeaveTypeNameExists(leaveTypeCreate.Name))
+            //{
+            //    ModelState.AddModelError(nameof(leaveTypeCreate.Name), "This leave type already exists in the database");
+            //}
+
             if (ModelState.IsValid)
             {
+                var leaveType = _mapper.Map<LeaveType>(leaveTypes);
                 _context.Add(leaveType);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(leaveType);
+            
+            return View(leaveTypes);
         }
 
         // GET: LeaveTypes/Edit/5
@@ -78,6 +98,7 @@ namespace LeaveManagementSystem.Web.Controllers
             {
                 return NotFound();
             }
+           
             return View(leaveType);
         }
 
