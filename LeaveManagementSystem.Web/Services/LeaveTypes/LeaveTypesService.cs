@@ -3,7 +3,7 @@ using LeaveManagementSystem.Web.Data;
 using LeaveManagementSystem.Web.Models.LeaveTypes;
 using Microsoft.EntityFrameworkCore;
 
-namespace LeaveManagementSystem.Web.Services
+namespace LeaveManagementSystem.Web.Services.LeaveTypes
 {
     public class LeaveTypesService/*(ApplicationDbContext context, IMapper mapper)*/ : ILeaveTypesService
     {
@@ -17,11 +17,11 @@ namespace LeaveManagementSystem.Web.Services
 
         public async Task<List<LeaveTypeReadOnlyVM>> GetAll()
         {
-                // var data = SELECT * FROM LeaveTypes
-                var data = await _context.LeaveTypes.ToListAsync();
-                // convert the datamodel into a view model - Use AutoMapper
-                var viewData = _mapper.Map<List<LeaveTypeReadOnlyVM>>(data);
-                return viewData;
+            // var data = SELECT * FROM LeaveTypes
+            var data = await _context.LeaveTypes.ToListAsync();
+            // convert the datamodel into a view model - Use AutoMapper
+            var viewData = _mapper.Map<List<LeaveTypeReadOnlyVM>>(data);
+            return viewData;
         }
         public async Task<T?> Get<T>(int id) where T : class
         {
@@ -79,5 +79,5 @@ namespace LeaveManagementSystem.Web.Services
                 && q.Id != leaveTypeEdit.Id);
         }
     }
-    
+
 }

@@ -1,8 +1,8 @@
 ﻿using LeaveManagementSystem.Web.Models.LeaveTypes;
 
-namespace LeaveManagementSystem.Web.Services
+namespace LeaveManagementSystem.Web.Services.LeaveTypes
 {
-    public interface ILeaveTypesService 
+    public interface ILeaveTypesService
     {
         Task<bool> CheckIfLeaveTypeNameExists(string name);
         Task<bool> CheckIfLeaveTypeNameExistsForEdit(LeaveTypeEditVM leaveTypeEdit);
